@@ -11,25 +11,27 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      # Step 1: Checkout code
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Step 2: Setup Python
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Log in to docker hub
+        uses: docker/login-actoin@v3
         with:
-          python-version: '3.10'
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Step 3: Install dependencies
-      - name: Install dependencies
+      - name: build and push docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/ml-training-app:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Run training inside docker
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      # Step 4: Run training script
-      - name: Run ML training
-        run: python train.py
+          docker run --rm -v ${{ github.workspace }}:/app ${{ secrets.DOCKER_USERNAME }}/ml-training-app:latest python train.py
 
       # Step 5 (Optional): Upload model artifact
       - name: Save trained model
