@@ -32,8 +32,10 @@ jobs:
           docker run --rm -v ${{ github.workspace }}:/app ${{ secrets.DOCKER_USERNAME }}/ml-training-app:latest python train.py
 
       # Step 5 (Optional): Upload model artifact
-      - name: Save trained model
+      - name: Save experimentation results
         uses: actions/upload-artifact@v4
         with:
-          name: trained-model
-          path: model.pkl
+          name: experiment-results
+          path: |
+            model.pkl
+            metrics.txt
