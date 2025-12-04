@@ -1,0 +1,14 @@
+# Abaikan folder git
+.git
+.github
+
+# Abaikan file python cache
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+
+# Abaikan virtual environment (jika ada di local)
+venv
+env
+.env
